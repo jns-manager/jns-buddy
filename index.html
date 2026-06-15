@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JNS Buddy บริการเที่ยวเป็นเพื่อ</title>
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Load Google Fonts (Prompt for Thai text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Custom Configuration for Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        // Soft Boyish Bright Theme
+                        bgMain: '#F4F7FB', // Light grayish blue for background
+                        bgCard: '#FFFFFF', // Pure white for cards
+                        primary: '#38BDF8', // Sky Blue - Bright, friendly
+                        primaryHover: '#0EA5E9', // Sky Blue darker
+                        secondary: '#FACC15', // Cute Yellow - Pop and energetic
+                        secondaryHover: '#EAB308', // Yellow darker
+                        textMain: '#334155', // Slate 700 - Soft dark text
+                        textMuted: '#64748B', // Slate 500
+                        accentLight: '#E0F2FE', // Sky 100 - Very soft borders
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for Animations and Aesthetics -->
+    <style>
+        html { scroll-behavior: smooth; overflow-x: hidden; }
+        body { background-color: #F4F7FB; color: #334155; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F4F7FB; }
+        ::-webkit-scrollbar-thumb { background: #bae6fd; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38BDF8; }
+
+        /* Bright text gradient */
+        .gradient-text {
+            background: linear-gradient(to right, #38BDF8, #60A5FA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Cute polka dot pattern */
+        .hero-pattern {
+            background-color: #F4F7FB;
+            background-image: radial-gradient(#bae6fd 2px, transparent 2px);
+            background-size: 24px 24px;
+        }
+
+        /* Soft bouncy shadow */
+        .cute-shadow {
+            box-shadow: 0 8px 30px -6px rgba(56, 189, 248, 0.15);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .cute-shadow:hover {
+            box-shadow: 0 15px 35px -6px rgba(56, 189, 248, 0.25);
+            transform: translateY(-4px);
+        }
+
+        /* ----- NEW ANIMATIONS ----- */
+        
+        /* Floating animations for decorative elements */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+        }
+        @keyframes float-reverse {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(15px) rotate(-3deg); }
+        }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-float-delayed { animation: float-reverse 5s ease-in-out infinite 1s; }
+        .animate-float-fast { animation: float 3s ease-in-out infinite; }
+
+        /* Wiggle for buttons */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+        .hover-wiggle:hover { animation: wiggle 0.5s ease-in-out infinite; }
+
+        /* Scroll Reveal Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy reveal */
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Staggered delays for child elements */
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+    </style>
+</head>
+
+<body class="font-sans antialiased overflow-x-hidden selection:bg-primary selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-xl shadow-sm border-b border-accentLight" id="navbar">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer group" onclick="window.scrollTo(0,0)">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-primary to-blue-400 flex items-center justify-center text-white font-black text-sm shadow-sm shadow-blue-200 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
+                        <i class="fa-solid fa-plane-departure"></i>
+                    </div>
+                    <span class="font-black text-lg tracking-tight text-textMain">JNS <span class="text-primary">Buddy</span></span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-5 items-center">
+                    <a href="#services" class="text-textMuted hover:text-primary font-bold text-xs transition-colors">บริการของเรา</a>
+                    <a href="#pricing" class="text-textMuted hover:text-primary font-bold text-xs transition-colors">เรทราคา</a>
+                    <a href="#profile" class="text-textMuted hover:text-primary font-bold text-xs transition-colors">ข้อมูลส่วนตัว</a>
+                    <a href="#rules" class="text-textMuted hover:text-primary font-bold text-xs transition-colors">ข้อตกลง</a>
+                    <a href="https://lin.ee/r47pTCs" target="_blank" rel="noopener noreferrer" class="bg-secondary hover:bg-secondaryHover text-slate-800 px-4 py-1.5 rounded-full font-black text-xs transition-all transform hover:scale-105 flex items-center gap-1.5 shadow-sm shadow-yellow-200 hover-wiggle">
+                        <i class="fa-brands fa-line text-sm"></i> จองคิว
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-textMain hover:text-primary focus:outline-none p-1.5 bg-accentLight rounded-lg transition-transform active:scale-95">
+                        <i class="fa-solid fa-bars text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-accentLight absolute w-full shadow-xl origin-top transition-transform">
+            <div class="px-4 pt-2 pb-4 space-y-1">
+                <a href="#services" class="block px-3 py-2 rounded-lg text-sm font-bold text-textMain hover:text-primary hover:bg-accentLight transition-colors">บริการของเรา</a>
+                <a href="#pricing" class="block px-3 py-2 rounded-lg text-sm font-bold text-textMain hover:text-primary hover:bg-accentLight transition-colors">เรทราคา</a>
+                <a href="#profile" class="block px-3 py-2 rounded-lg text-sm font-bold text-textMain hover:text-primary hover:bg-accentLight transition-colors">ข้อมูลส่วนตัว</a>
+                <a href="#rules" class="block px-3 py-2 rounded-lg text-sm font-bold text-textMain hover:text-primary hover:bg-accentLight transition-colors">ข้อตกลง</a>
+                <a href="https://lin.ee/r47pTCs" target="_blank" rel="noopener noreferrer" class="block px-3 py-2.5 mt-2 text-center rounded-lg text-sm font-black bg-secondary text-slate-800 hover:bg-secondaryHover shadow-sm shadow-yellow-200 active:scale-95 transition-transform">
+                    <i class="fa-brands fa-line mr-1"></i> จองคิวผ่าน Line
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-12 lg:pt-32 lg:pb-16 overflow-hidden hero-pattern">
+        
+        <!-- Animated Background Elements -->
+        <div class="absolute top-32 left-[10%] text-primary/40 text-4xl animate-float hidden md:block"><i class="fa-solid fa-cloud"></i></div>
+        <div class="absolute top-40 right-[15%] text-secondary/60 text-2xl animate-float-delayed hidden md:block">✨</div>
+        <div class="absolute bottom-20 left-[20%] w-3 h-3 rounded-full bg-primary/40 animate-float-fast"></div>
+        <div class="absolute bottom-32 right-[25%] text-secondary/40 text-3xl animate-float hidden sm:block"><i class="fa-solid fa-star"></i></div>
+        <div class="absolute top-20 right-[5%] w-4 h-4 rounded-full bg-secondary/50 animate-float"></div>
+
+        <!-- Soft background glow -->
+        <div class="absolute top-20 left-1/2 -translate-x-1/2 w-full max-w-lg h-[250px] bg-primary/15 blur-[80px] rounded-full pointer-events-none"></div>
+        
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center reveal active">
+            
+            <div class="inline-flex items-center px-3 py-1 rounded-full bg-white border border-accentLight text-primary font-bold text-[11px] tracking-wide mb-5 cute-shadow animate-float">
+                <span class="text-sm mr-1.5">👋</span> พร้อมดูแลทริปของคุณแล้ววันนี้!
+            </div>
+            
+            <h1 class="text-3xl md:text-5xl lg:text-5xl font-black leading-tight mb-4 text-textMain">
+                หาเพื่อนเที่ยว <span class="text-secondary inline-block hover:scale-105 transition-transform cursor-default">ถ่ายรูปสวย</span> <br>
+                <span class="gradient-text">ดูแลใส่ใจตลอดทริป</span>
+            </h1>
+            
+            <p class="text-sm md:text-base text-textMuted mb-7 max-w-lg mx-auto leading-relaxed font-medium">
+                เที่ยวคาเฟ่ ขึ้นดอย ดูหนัง ทานข้าว พร้อมเป็นตากล้องส่วนตัวให้คุณ <br class="hidden sm:block">
+                คุยเก่ง เป็นกันเอง ถ่ายรูปสวยเป๊ะปังแน่นอนครับผม!
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                <a href="https://lin.ee/r47pTCs" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-primary hover:bg-primaryHover text-white px-6 py-3 rounded-full font-black text-sm transition-all cute-shadow flex items-center justify-center gap-2 hover:scale-105 hover-wiggle">
+                    <i class="fa-brands fa-line text-lg"></i> ทักไลน์เลย @734sutzf
+                </a>
+                <a href="#services" class="w-full sm:w-auto bg-white hover:bg-accentLight text-textMain px-6 py-3 rounded-full font-bold text-sm transition-all flex items-center justify-center gap-2 border border-accentLight hover:scale-105">
+                    ดูรายละเอียดกัน <i class="fa-solid fa-arrow-down text-primary animate-bounce"></i>
+                </a>
+            </div>
+            
+            <div class="mt-10 flex items-center justify-center gap-4 text-textMuted text-[11px] font-bold flex-wrap bg-white/60 inline-flex mx-auto px-4 py-2 rounded-full backdrop-blur-md border border-accentLight cute-shadow">
+                <div class="flex items-center gap-1.5 hover:text-secondary transition-colors cursor-default">
+                    <i class="fa-solid fa-car-side text-secondary text-base"></i> บริการเป็นเพื่อนเที่ยวทั่วเชียงใหม่และต่างจังหวัด
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-12 bg-white relative z-20 rounded-t-[2rem] border-t-[3px] border-primary overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10 reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-textMain mb-2">บริการของเรา 📌</h2>
+                <div class="w-12 h-1.5 bg-secondary rounded-full mx-auto mb-3"></div>
+                <p class="text-textMuted max-w-xl mx-auto font-medium text-sm">ดูแลอย่างดี เป็นได้ทั้งเพื่อนคู่คิดและช่างภาพส่วนตัวให้คุณ</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- Service 1 -->
+                <div class="bg-bgMain rounded-[1.5rem] p-5 border-2 border-accentLight hover:border-primary transition-all cute-shadow group reveal delay-100">
+                    <div class="w-12 h-12 rounded-[1rem] bg-white shadow-sm flex items-center justify-center text-primary text-xl mb-4 group-hover:scale-110 group-hover:rotate-[15deg] group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-textMain mb-1.5 group-hover:text-primary transition-colors">สายคาเฟ่ / ฮอปปิ้ง</h3>
+                    <p class="text-textMuted mb-4 font-medium leading-relaxed text-[13px]">ตระเวนกินขนม ดื่มกาแฟ นั่งชิลล์ตามคาเฟ่ฮิตๆ หามุมถ่ายรูปแสงสวยๆ</p>
+                    <ul class="space-y-1.5 text-[11px] text-textMain font-bold bg-white p-2.5 rounded-xl border border-accentLight">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-secondary text-sm"></i> ช่วยเลือกชุดให้เข้ากับร้าน</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-secondary text-sm"></i> บรีฟท่าทาง มุมกล้องเป๊ะ</li>
+                    </ul>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-bgMain rounded-[1.5rem] p-5 border-2 border-accentLight hover:border-secondary transition-all cute-shadow group reveal delay-200">
+                    <div class="w-12 h-12 rounded-[1rem] bg-white shadow-sm flex items-center justify-center text-secondary text-xl mb-4 group-hover:scale-110 group-hover:-rotate-[15deg] group-hover:bg-secondary group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-mountain-sun"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-textMain mb-1.5 group-hover:text-secondary transition-colors">เที่ยวดอย / ธรรมชาติ</h3>
+                    <p class="text-textMuted mb-4 font-medium leading-relaxed text-[13px]">ลุยขึ้นดอยสูดอากาศ ไหว้พระขอพร หรือแคมป์ปิ้งแบบชิลล์ๆ ไม่เหงาแน่นอน</p>
+                    <ul class="space-y-1.5 text-[11px] text-textMain font-bold bg-white p-2.5 rounded-xl border border-accentLight">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-primary text-sm"></i> ลุยไหนลุยกัน ไม่เกี่ยงลำบาก</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-primary text-sm"></i> ถ่ายรูปวิวและรูปคุณให้ปังสุด</li>
+                    </ul>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-bgMain rounded-[1.5rem] p-5 border-2 border-accentLight hover:border-primary transition-all cute-shadow group reveal delay-300">
+                    <div class="w-12 h-12 rounded-[1rem] bg-white shadow-sm flex items-center justify-center text-primary text-xl mb-4 group-hover:scale-110 group-hover:rotate-[15deg] group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-film"></i>
+                    </div>
+                    <h3 class="text-lg font-black text-textMain mb-1.5 group-hover:text-primary transition-colors">ดูหนัง / เดินห้าง</h3>
+                    <p class="text-textMuted mb-4 font-medium leading-relaxed text-[13px]">กิจกรรมเบาๆ ในวันว่าง หาของอร่อยกิน ดูหนังเรื่องโปรด หรือช่วยถือของ</p>
+                    <ul class="space-y-1.5 text-[11px] text-textMain font-bold bg-white p-2.5 rounded-xl border border-accentLight">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-secondary text-sm"></i> พูดคุยได้ทุกเรื่อง เป็นกันเอง</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-secondary text-sm"></i> รับฟังปัญหา สบายใจได้ครับ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="py-12 bg-bgMain border-t border-accentLight overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+            <div class="bg-white rounded-[2rem] p-4 sm:p-6 border-2 border-accentLight cute-shadow flex flex-col md:flex-row gap-6 items-center">
+                
+                <!-- Profile Image -->
+                <div class="w-full md:w-1/3 relative group">
+                    <div class="aspect-[4/5] rounded-[1.5rem] overflow-hidden border-[3px] border-white shadow-lg relative z-10">
+                        <!-- Added subtle scale animation on hover -->
+                        <img src="https://scontent.fbkk36-1.fna.fbcdn.net/v/t39.30808-6/658109875_1488448393064843_370065313325800130_n.jpg?stp=dst-jpg_tt6&cstp=mx1536x2048&ctp=s1536x2048&_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHYq8QTGziBS-0hncHmj5usmLyG5ZzRFGuYvIblnNEUa8jIuh2ALhxDLHPhh6Ni_FkKI7TLitw3dSoVyRI2uxgO&_nc_ohc=R8xWcHXFqKcQ7kNvwF4Mkv6&_nc_oc=Adr_entCVe6EFbuvx3iE9NgN6d-mHN4gxVWXQjjoD8N6yeHGlFaUZs7Oy5F_VkjcbSI&_nc_zt=23&_nc_ht=scontent.fbkk36-1.fna&_nc_gid=4R6LIwu3dz6TNwHfzCU7ag&_nc_ss=7b2a8&oh=00_Af-lEaJ4PVNt_cA3TtkuM-4qzShkTZir5ueq9kxHdwWRRQ&oe=6A35B0E8" alt="Profile Picture" class="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-3 left-3 text-white transform group-hover:-translate-y-2 transition-transform duration-300">
+                            <div class="bg-primary text-white text-[9px] font-black px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 mb-1 cute-shadow animate-float-fast">
+                                <i class="fa-solid fa-user-check"></i> Profile
+                            </div>
+                            <h3 class="text-lg font-black drop-shadow-md">เพื่อนเที่ยวของคุณ</h3>
+                        </div>
+                    </div>
+                    <!-- Cute blob behind image -->
+                    <div class="absolute z-0 top-2 -right-3 w-full h-full bg-secondary/80 rounded-[1.5rem] rotate-6 group-hover:rotate-12 transition-transform duration-500"></div>
+                </div>
+
+                <!-- Profile Details -->
+                <div class="w-full md:w-2/3">
+                    <div class="mb-5">
+                        <h2 class="text-2xl font-black text-textMain mb-1">ข้อมูลส่วนตัว 😊</h2>
+                        <p class="text-textMuted font-medium text-xs">ทำความรู้จักกันก่อนไปเที่ยวด้วยกันนะครับ</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                        <!-- Detail Card 1 -->
+                        <div class="bg-bgMain p-3 rounded-2xl border border-accentLight flex items-start gap-3 hover:border-primary transition-colors group">
+                            <div class="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-primary text-sm shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform"><i class="fa-solid fa-venus-mars"></i></div>
+                            <div>
+                                <h4 class="font-black text-textMain text-xs mb-0.5 group-hover:text-primary transition-colors">เพศสภาพ</h4>
+                                <p class="text-textMuted text-[10px] font-medium leading-relaxed">LGBTQ+ (ลุยๆ หรือเม้าท์มอย เข้าได้กับทุกคนครับ)</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Detail Card 2 -->
+                        <div class="bg-bgMain p-3 rounded-2xl border border-accentLight flex items-start gap-3 hover:border-secondary transition-colors group">
+                            <div class="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-secondary text-sm shrink-0 group-hover:scale-110 group-hover:-rotate-12 transition-transform"><i class="fa-solid fa-camera"></i></div>
+                            <div>
+                                <h4 class="font-black text-textMain text-xs mb-0.5 group-hover:text-secondary transition-colors">ทักษะตากล้อง</h4>
+                                <p class="text-textMuted text-[10px] font-medium leading-relaxed">มีกล้องโปร / iPhone 14 Pro Max แต่งสีละมุนได้ครับ</p>
+                            </div>
+                        </div>
+
+                        <!-- Detail Card 3 -->
+                        <div class="bg-bgMain p-3 rounded-2xl border border-accentLight flex items-start gap-3 hover:border-primary transition-colors group">
+                            <div class="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-primary text-sm shrink-0 group-hover:scale-110 group-hover:rotate-12 transition-transform"><i class="fa-solid fa-ruler"></i></div>
+                            <div>
+                                <h4 class="font-black text-textMain text-xs mb-0.5 group-hover:text-primary transition-colors">รูปร่างหน้าตา</h4>
+                                <p class="text-textMuted text-[10px] font-medium leading-relaxed">สูง 185 ซม. / 23 ปี / แต่งตัวสะอาดสะอ้าน</p>
+                            </div>
+                        </div>
+
+                        <!-- Detail Card 4 -->
+                        <div class="bg-bgMain p-3 rounded-2xl border border-accentLight flex items-start gap-3 hover:border-secondary transition-colors group">
+                            <div class="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center text-secondary text-sm shrink-0 group-hover:scale-110 group-hover:-rotate-12 transition-transform"><i class="fa-solid fa-car"></i></div>
+                            <div>
+                                <h4 class="font-black text-textMain text-xs mb-0.5 group-hover:text-secondary transition-colors">การเดินทาง</h4>
+                                <p class="text-textMuted text-[10px] font-medium leading-relaxed">ไม่มีรถส่วนตัว ยินดีไปกับลูกค้า หรือพร้อมเรียก Grab ครับ</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Social Media -->
+                    <div class="bg-bgMain p-4 rounded-2xl border border-accentLight reveal delay-100">
+                        <h4 class="font-black text-textMain mb-2 text-[11px] text-center">ช่องทางการติดตาม ✨</h4>
+                        <div class="flex flex-col sm:flex-row gap-2.5">
+                            <a href="https://www.facebook.com/jirapong.saelim.9/" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-[#1877F2] text-[#1877F2] hover:text-white border border-[#1877F2]/20 hover:border-[#1877F2] py-2 px-3 rounded-xl transition-all duration-300 font-bold text-[11px] cute-shadow group">
+                                <i class="fa-brands fa-facebook-f group-hover:scale-125 transition-transform"></i> Facebook
+                            </a>
+                            <a href="https://www.instagram.com/__nxt.j_/" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-gradient-to-r hover:from-[#833AB4] hover:via-[#FD1D1D] hover:to-[#F56040] text-[#E1306C] hover:text-white border border-[#E1306C]/20 hover:border-transparent py-2 px-3 rounded-xl transition-all duration-300 font-bold text-[11px] cute-shadow group">
+                                <i class="fa-brands fa-instagram group-hover:scale-125 transition-transform"></i> Instagram
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-12 bg-white relative">
+        <div class="absolute top-0 left-0 w-full h-1/2 bg-bgMain rounded-b-[2rem] -z-10"></div>
+        
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8 reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-textMain mb-2">เรทราคา 💸</h2>
+                <p class="text-textMuted max-w-lg mx-auto font-medium text-sm">ราคาคุ้มค่า กับการมีคนดูแลตลอดทริป</p>
+            </div>
+
+            <!-- PRICING CARD -->
+            <div class="bg-white rounded-[2rem] p-6 border-2 border-accentLight cute-shadow relative overflow-hidden group reveal delay-100 hover:border-primary transition-colors">
+                
+                <div class="mb-4 text-center sm:text-left">
+                    <div class="inline-flex items-center gap-1.5 bg-slate-800 text-white px-3 py-1 rounded-full text-[9px] font-black mb-3 shadow-sm group-hover:bg-primary transition-colors">
+                        <i class="fa-solid fa-star text-secondary text-[10px] animate-spin-slow"></i> STARTING RATE
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-5 mb-6">
+                    <div class="flex items-end justify-center sm:justify-start">
+                        <span class="text-6xl font-black text-slate-800 leading-none tracking-tighter group-hover:text-primary transition-colors">350</span>
+                        <span class="text-sm text-textMuted mb-1.5 font-bold ml-2">บาท / ชม.</span>
+                    </div>
+                    
+                    <a href="https://lin.ee/r47pTCs" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto bg-secondary hover:bg-secondaryHover text-slate-800 px-6 py-3 rounded-xl font-black text-sm text-center transition-all shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center gap-2 hover-wiggle">
+                        สอบถามคิวว่าง <i class="fa-solid fa-paper-plane text-base"></i>
+                    </a>
+                </div>
+                
+                <!-- Notice Box (Condition) -->
+                <div class="border-t-2 border-dashed border-accentLight pt-5">
+                    <div class="flex flex-col sm:flex-row items-start gap-3 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                        <div class="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-secondary shrink-0 text-base animate-bounce">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-slate-800 font-black text-[13px] mb-1">เงื่อนไขค่าใช้จ่ายเพิ่มเติม</h4>
+                            <p class="text-textMuted leading-relaxed font-medium text-[11px]">
+                                เรทราคาด้านบนคือ <span class="bg-primary text-white px-1.5 py-0.5 rounded-md font-bold shadow-sm">ค่าบริการเที่ยวเป็นเพื่อนเท่านั้น</span> 
+                                สำหรับค่าใช้จ่ายที่เกิดขึ้นระหว่างทริป เช่น ค่าอาหาร, ค่าเดินทาง, ค่าตั๋วต่างๆ <span class="text-slate-800 font-black border-b-2 border-secondary">รบกวนลูกค้าดูแลรับผิดชอบทั้งหมดนะครับ</span> ขอบคุณครับ 🙏
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rules & Policies -->
+    <section id="rules" class="py-12 bg-bgMain border-t border-accentLight overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-8 reveal">
+                <h2 class="text-2xl md:text-3xl font-black text-textMain mb-2">ข้อตกลงก่อนจอง 📝</h2>
+                <div class="w-12 h-1.5 bg-primary rounded-full mx-auto mb-3"></div>
+                <p class="text-textMuted font-medium text-sm">อ่านนิดนึงน้า เพื่อความสบายใจของทั้งสองฝ่ายครับ</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                <!-- Rule 1 -->
+                <div class="bg-white p-5 rounded-2xl border border-red-100 hover:border-red-300 flex flex-col items-center text-center transition-colors cute-shadow group reveal delay-100">
+                    <div class="w-10 h-10 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-xl mb-3 group-hover:scale-110 group-hover:-rotate-[10deg] transition-transform">🚫</div>
+                    <h4 class="font-black text-textMain mb-1 text-sm">ไม่รับงานผิดกฎหมาย</h4>
+                    <p class="text-[11px] text-textMuted font-medium">ปฏิเสธงานที่ผิดกฎหมายและศีลธรรมทุกประเภทอย่างเด็ดขาดครับ</p>
+                </div>
+                <!-- Rule 2 -->
+                <div class="bg-white p-5 rounded-2xl border border-blue-100 hover:border-primary flex flex-col items-center text-center transition-colors cute-shadow group reveal delay-200">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center text-xl mb-3 group-hover:scale-110 group-hover:rotate-[10deg] transition-transform">🤝</div>
+                    <h4 class="font-black text-textMain mb-1 text-sm">ไม่รับฟีลแฟน</h4>
+                    <p class="text-[11px] text-textMuted font-medium">บริการเพื่อนเที่ยวเท่านั้น ไม่มีการสกินชิพเกินเลยน้า</p>
+                </div>
+                <!-- Rule 3 -->
+                <div class="bg-white p-5 rounded-2xl border border-orange-100 hover:border-orange-300 flex flex-col items-center text-center transition-colors cute-shadow group reveal delay-300">
+                    <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-xl mb-3 group-hover:scale-110 group-hover:-rotate-[10deg] transition-transform">🔞</div>
+                    <h4 class="font-black text-textMain mb-1 text-sm">ไม่รับงาน 18+</h4>
+                    <p class="text-[11px] text-textMuted font-medium">ปลอดภัย 100% ไม่รับงานลามก ดื่มแอลกอฮอล์ด้วยได้นิดหน่อยครับ</p>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 justify-center max-w-xl mx-auto reveal delay-200">
+                <div class="text-3xl drop-shadow-sm animate-wiggle">⏱️</div>
+                <div class="text-center sm:text-left text-textMain">
+                    <h4 class="font-black text-sm mb-0.5">รบกวนจองคิวล่วงหน้า 1-2 วันนะครับ</h4>
+                    <p class="text-[11px] font-bold opacity-80">เพื่อเคลียร์คิวงาน และเตรียมตัวเดินทางไปดูแลคุณให้ดีที่สุดครับ!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Contact -->
+    <footer class="bg-white pt-12 pb-6 border-t-[3px] border-primary relative overflow-hidden">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 reveal">
+            <h2 class="text-2xl md:text-3xl font-black mb-2 text-textMain">ทักมาคุยกันได้เลย! 💬</h2>
+            <p class="text-textMuted mb-8 font-medium text-[13px]">แอดไลน์มาสอบถามรายละเอียด สถานที่ และระยะเวลาที่ต้องการให้ดูแลได้เลยครับ</p>
+            
+            <div class="flex flex-col items-center justify-center gap-4 mb-12">
+                <!-- Line ID Box -->
+                <div class="bg-bgMain border border-accentLight px-4 py-2.5 rounded-2xl flex items-center gap-3 cute-shadow hover:border-green-400 transition-colors group">
+                    <div class="w-10 h-10 rounded-xl bg-[#00B900] flex items-center justify-center text-white text-xl shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fa-brands fa-line"></i>
+                    </div>
+                    <div class="text-left pr-3 border-r border-accentLight">
+                        <div class="text-textMuted text-[9px] font-black tracking-widest uppercase">Line ID</div>
+                        <div class="text-lg font-black tracking-wider text-textMain">@734sutzf</div>
+                    </div>
+                    <button id="copyBtn" class="bg-white hover:bg-[#00B900] hover:text-white text-[#00B900] border border-[#00B900]/30 w-10 h-10 rounded-xl transition-all relative flex items-center justify-center active:scale-95" title="คัดลอก ID">
+                        <i class="fa-regular fa-copy text-base"></i>
+                    </button>
+                </div>
+
+                <!-- Add Friend Button -->
+                <a href="https://lin.ee/r47pTCs" target="_blank" rel="noopener noreferrer" class="bg-[#00B900] hover:bg-[#009900] text-white px-6 py-3 rounded-full font-black text-sm transition-all flex items-center gap-2 shadow-md hover:shadow-lg transform hover:-translate-y-1 hover-wiggle">
+                    <i class="fa-solid fa-user-plus"></i> เพิ่มเพื่อนทาง Line
+                </a>
+            </div>
+
+            <div class="border-t border-accentLight pt-5 flex justify-center text-textMuted text-[10px] font-bold">
+                <div class="flex items-center gap-1.5">
+                    <div class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-[8px]">
+                        JB
+                    </div>
+                    <span>© 2026 JNS Buddy. All rights reserved.</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Decor -->
+        <div class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-secondary to-primary"></div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Copy to clipboard functionality
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const textToCopy = '@734sutzf';
+            const btn = this;
+            
+            // Create a temporary textarea to hold the text
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            // Prevent scrolling to bottom when appending
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            
+            // Select and copy
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                // Execute the copy command
+                document.execCommand('copy');
+                showCopiedFeedback(btn);
+            } catch (error) {
+                console.error('Copy failed', error);
+            }
+            
+            // Clean up
+            textArea.remove();
+        });
+
+        function showCopiedFeedback(btn) {
+            const originalHTML = btn.innerHTML;
+            const originalClasses = btn.className;
+            
+            // Change button appearance
+            btn.innerHTML = '<i class="fa-solid fa-check text-white"></i>';
+            btn.className = 'bg-secondary text-white border-none w-10 h-10 rounded-xl transition-all relative flex items-center justify-center scale-110 shadow-md';
+            
+            // Create toast
+            const toast = document.createElement('div');
+            toast.className = 'absolute -top-10 left-1/2 transform -translate-x-1/2 bg-textMain text-white text-[10px] py-1 px-3 rounded-full font-bold shadow-lg opacity-0 transition-opacity duration-300 whitespace-nowrap z-50';
+            toast.innerText = 'คัดลอกแล้ว!';
+            btn.appendChild(toast);
+            
+            // Animate toast in
+            setTimeout(() => toast.classList.remove('opacity-0'), 10);
+            
+            // Reset after 2 seconds
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.className = originalClasses;
+            }, 2000);
+        }
+
+        // Mobile menu toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        let isMenuOpen = false;
+
+        mobileBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('scale-y-100');
+                mobileBtn.innerHTML = '<i class="fa-solid fa-xmark text-base text-primary"></i>';
+                mobileBtn.classList.add('bg-primary/10');
+            } else {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('scale-y-100');
+                mobileBtn.innerHTML = '<i class="fa-solid fa-bars text-base"></i>';
+                mobileBtn.classList.remove('bg-primary/10');
+            }
+        });
+
+        // Close mobile menu when a link is clicked
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                isMenuOpen = false;
+                mobileBtn.innerHTML = '<i class="fa-solid fa-bars text-base"></i>';
+                mobileBtn.classList.remove('bg-primary/10');
+            });
+        });
+
+        // Navbar blur and shadow effect on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-md');
+                navbar.classList.remove('shadow-sm', 'border-b', 'border-accentLight');
+            } else {
+                navbar.classList.remove('shadow-md');
+                navbar.classList.add('shadow-sm', 'border-b', 'border-accentLight');
+            }
+        });
+
+        // Intersection Observer for Scroll Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 // Trigger when 15% of element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Optional: Stop observing once revealed if you only want it to animate once
+                        // observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Select all elements with the 'reveal' class
+            const revealElements = document.querySelectorAll('.reveal');
+            revealElements.forEach(el => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
